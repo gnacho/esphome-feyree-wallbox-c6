@@ -2,6 +2,8 @@
 
 [🇪🇸 Versión en castellano](README.es.md)
 
+![Feyree EV wallbox charger (vendor product image)](docs/images/product.jpg)
+
 **100% local** integration of the Feyree EV wallbox charger (Tuya, single-phase 32 A / 7 kW)
 into Home Assistant, by replacing the stock **WBR3** WiFi module (Realtek RTL8720CF, not
 flashable in circuit) with a **Seeed Studio XIAO ESP32-C6** running ESPHome. The ESP32 talks
@@ -37,6 +39,8 @@ before (display, RFID, protections); it just stops depending on the Tuya cloud.
 - An alternative CB3S YAML is also included here if you prefer that route
   ([`feyree-cb3s.yaml`](feyree-cb3s.yaml)).
 
+![Community CB3S swap soldered on the WBR3 footprint (photo: Elektroda community)](docs/images/cb3s_swap_community.jpg)
+
 ## Hardware
 
 | Item | Detail |
@@ -46,12 +50,20 @@ before (display, RFID, protections); it just stops depending on the Tuya cloud.
 | Stock WiFi module | **WBR3** (Realtek RTL8720CF) — removed |
 | New module | **Seeed XIAO ESP32-C6** (`seeed_xiao_esp32c6`, **esp-idf** framework) |
 
+![Inside the charger: power board (left) and control board (right)](docs/images/charger_opened.jpg)
+
 ### Wiring XIAO ESP32-C6 ↔ Feyree board
 
 The TuyaMCU UART lives on **pads 15/16** of the WiFi module footprint (confirmed against the
 official Tuya WBR3 datasheet application schematic: pin 16 = TXD, pin 15 = RXD). That UART is
 also exposed on the 5-pin **RST/RX/TX/VDD/GND header** next to the module footprint, which is
 much easier to solder to.
+
+![Control board (PCB FLYBGU05A): WBR3 module, RST/RX/TX/VDD/GND header and A/B/GND/5V footprint](docs/images/board_overview.jpg)
+
+![Close-up of the UART header and the WBR3 module](docs/images/header_detail.jpg)
+
+![XIAO ESP32-C6 pinout (Seeed Studio)](docs/images/xiao_pinout.png)
 
 | XIAO C6 | Feyree board | Function |
 |---|---|---|
@@ -74,6 +86,8 @@ Notes:
   with a multimeter first: ours was dead (1.2 V). Any GND works.
 - **Solder all four wires.** Loose dupont jumpers caused us days of corrupt UART frames
   (~2% checksum errors) and ignored commands.
+
+![The four wires soldered to the header pads (TX/RX crossed on this board revision)](docs/images/soldering.jpg)
 - The TuyaMCU UART is the C6's hardware **UART0** (GPIO16/17). The logger goes over the
   native USB (`USB_SERIAL_JTAG`), so it does not clash with UART0.
 - **Do not connect USB and board power at the same time** if you are unsure about isolation.
@@ -184,6 +198,8 @@ esphome run /tmp/esphome_feyree_c6/feyree-c6.yaml --device feyree-c6-<mac6>.loca
 - [ ] Solar-surplus dynamic charging in production.
 
 Project currently **paused** (house move); the charger is fully assembled and waiting.
+
+![Final assembly: the XIAO C6 on the lid, wired to the UART header and the 5V footprint](docs/images/final_assembly.jpg)
 
 ## Troubleshooting
 
