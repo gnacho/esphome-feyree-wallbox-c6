@@ -23,14 +23,18 @@ exactamente igual (pantalla, RFID, protecciones); solo deja de depender de la nu
 
 ### Por qué sustituir el WBR3 en vez de flashearlo
 
-- El WBR3 (Realtek RTL8720CF) **no está soportado por ESPHome**; en OpenBeken es experimental.
-- Peor aún: **no se puede flashear soldado** — los pines de strap/log son pads en la *cara
-  inferior* del módulo. Hay que desoldarlo de todas formas.
-- La comunidad documentó el cambio por un **CB3S** (Beken), flasheable y con la UART TuyaMCU
-  en los mismos pads del footprint. Ya que desoldar es inevitable en ambos casos, un ESP32
-  nos pareció mejor opción: ESPHome maduro, componente TuyaMCU nativo y OTA. La pega es
-  rehacer parte del trabajo de adaptación (cableado/YAML) que la comunidad ya había hecho
-  para el Beken.
+- El WBR3 (Realtek RTL8720CF) **no está entre los chips soportados oficialmente por
+  ESPHome** (la documentación solo lista RTL8710BN/BX para Realtek; LibreTiny sí incluye
+  una definición de placa WBR3, pero el soporte del RTL8720CF es parcial/experimental).
+  En OpenBeken también es experimental.
+- Y de todas formas **no se puede flashear soldado** — el pin de strap de descarga (PA00)
+  y el RX de la UART de log (PA15) son pads en la *cara inferior* del módulo. Hay que
+  desoldarlo sí o sí.
+- La comunidad documentó el cambio por un **CB3S** (Beken), bien soportado y con la UART
+  TuyaMCU en los mismos pads del footprint. Ya que desoldar es inevitable en ambos casos,
+  un ESP32 me pareció mejor opción: ESPHome maduro, componente TuyaMCU nativo y OTA. La
+  pega fue rehacer parte del trabajo de adaptación (cableado/YAML) que la comunidad ya
+  había hecho para el Beken.
 - Si prefieres esa ruta, también se incluye un YAML para CB3S
   ([`feyree-cb3s.yaml`](feyree-cb3s.yaml)).
 

@@ -23,14 +23,17 @@ before (display, RFID, protections); it just stops depending on the Tuya cloud.
 
 ### Why replace the WBR3 instead of flashing it
 
-- The WBR3 (Realtek RTL8720CF) is **not supported by ESPHome**; OpenBeken support is experimental.
-- Worse: it **cannot be flashed while soldered** — the download-strap and log pins are
-  pads on the *underside* of the module. You must desolder it anyway.
-- The community documented swapping it for a **CB3S** (Beken), which is flashable and has
-  its TuyaMCU UART on the same footprint pads. Since desoldering is unavoidable either way,
-  an ESP32 is (in our opinion) the better option: mature ESPHome support, native TuyaMCU
-  component and OTA updates. The price is redoing the wiring/YAML adaptation work the
-  community had already done for the Beken swap.
+- The WBR3 (Realtek RTL8720CF) is **not among ESPHome's officially supported chips** (the
+  docs list only RTL8710BN/BX for Realtek; LibreTiny does ship a WBR3 board definition, but
+  RTL8720CF support is partial/experimental). OpenBeken support is experimental too.
+- And it **cannot be flashed while soldered** anyway — the download-strap pin (PA00) and
+  the log UART RX (PA15) are pads on the *underside* of the module. You must desolder it
+  regardless.
+- The community documented swapping it for a **CB3S** (Beken), which is well supported and
+  has its TuyaMCU UART on the same footprint pads. Since desoldering is unavoidable either
+  way, an ESP32 seemed the better option to me: mature ESPHome support, native TuyaMCU
+  component and OTA updates. The price was redoing part of the wiring/YAML adaptation work
+  the community had already done for the Beken swap.
 - An alternative CB3S YAML is also included here if you prefer that route
   ([`feyree-cb3s.yaml`](feyree-cb3s.yaml)).
 
