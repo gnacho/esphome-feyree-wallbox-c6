@@ -40,6 +40,10 @@ exactamente igual (pantalla, RFID, protecciones); solo deja de depender de la nu
 - Si prefieres esa ruta, también se incluye un YAML para CB3S
   ([`feyree-cb3s.yaml`](feyree-cb3s.yaml)).
 
+| Pinout del **WBR3** original | Pinout del **CB3S** — mismo footprint |
+|---|---|
+| ![Pinout WBR3](docs/images/wbr3_original.svg) | ![Pinout CB3S](docs/images/cb3s_sustituir.svg) |
+
 ![Swap comunitario de un CB3S soldado en el footprint del WBR3 (foto: comunidad Elektroda)](docs/images/cb3s_swap_community.jpg)
 
 ## Hardware
@@ -249,6 +253,8 @@ strap/log están en la cara inferior, así que el volcado también exige quitar 
 
 ## Referencias
 
+- **El cargador usado aquí (listing de AliExpress)**:
+  https://es.aliexpress.com/item/1005008368645569.html
 - **Teardown Feyree (stonacek, Elektroda)** — mapa dpIDs, factores, secuencia de carga:
   https://www.elektroda.com/rtvforum/topic4085036.html
 - **Esquema oficial Tuya WBR3 MCU serial** (UART del MCU en pads 15/16):

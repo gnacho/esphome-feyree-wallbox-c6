@@ -39,6 +39,10 @@ before (display, RFID, protections); it just stops depending on the Tuya cloud.
 - An alternative CB3S YAML is also included here if you prefer that route
   ([`feyree-cb3s.yaml`](feyree-cb3s.yaml)).
 
+| Stock **WBR3** pinout | **CB3S** pinout — same footprint |
+|---|---|
+| ![WBR3 pinout](docs/images/wbr3_original.svg) | ![CB3S pinout](docs/images/cb3s_sustituir.svg) |
+
 ![Community CB3S swap soldered on the WBR3 footprint (photo: Elektroda community)](docs/images/cb3s_swap_community.jpg)
 
 ## Hardware
@@ -58,8 +62,6 @@ The TuyaMCU UART lives on **pads 15/16** of the WiFi module footprint (confirmed
 official Tuya WBR3 datasheet application schematic: pin 16 = TXD, pin 15 = RXD). That UART is
 also exposed on the 5-pin **RST/RX/TX/VDD/GND header** next to the module footprint, which is
 much easier to solder to.
-
-![Close-up of the stock board: the WBR3 and its UART header](docs/images/header_detail.jpg)
 
 ![Control board (PCB FLYBGU05A): WBR3 module, RST/RX/TX/VDD/GND header and A/B/GND/5V footprint](docs/images/board_overview.jpg)
 
@@ -95,10 +97,6 @@ Notes:
 - **Do not connect USB and board power at the same time** if you are unsure about isolation.
 - If a CB3S (or the WBR3) is still sitting on the module footprint unpowered, it hangs on the
   UART lines and degrades them. Remove it.
-
-| The four soldered wires (5V, GND, TX, RX) | Final assembly — XIAO powered from the 5V footprint |
-|---|---|
-| ![Soldered UART and power wires](docs/images/soldering.jpg) | ![Final assembly with the XIAO ESP32-C6](docs/images/final_assembly.jpg) |
 
 ## Datapoint (dpID) map
 
