@@ -238,10 +238,14 @@ exactamente lo que estás haciendo.
 
 ## Respaldo del firmware original
 
-Se hizo un backup completo del WBR3 antes de desoldarlo (recomendado: haz el tuyo con
-`ltchiptool flash read ambz2 wbr3_backup.bin -d /dev/ttyUSB0` — ojo, el WBR3 hay que
-**desoldarlo** para acceder a los pads de strap/log). Se publicará aquí cuando se localice
-y se verifique que no contiene credenciales.
+Este proyecto **no flashea el WBR3** — simplemente se desuelda y se sustituye. Eso significa
+que no hace falta ningún respaldo: el firmware Tuya original queda intacto en el módulo
+retirado. **Recomendación: guarda el WBR3 desoldado en lugar seguro — ese módulo *es* tu
+restauración de fábrica.** Lo vuelves a soldar y el cargador queda 100% de serie.
+
+Si aun así quieres un respaldo en fichero, hazlo antes de desoldar (en realidad los pads de
+strap/log están en la cara inferior, así que el volcado también exige quitar el módulo):
+`ltchiptool flash read ambz2 wbr3_backup.bin -d /dev/ttyUSB0` (debe ocupar exactamente 2 MiB).
 
 ## Referencias
 

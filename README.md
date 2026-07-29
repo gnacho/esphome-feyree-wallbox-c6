@@ -59,6 +59,8 @@ official Tuya WBR3 datasheet application schematic: pin 16 = TXD, pin 15 = RXD).
 also exposed on the 5-pin **RST/RX/TX/VDD/GND header** next to the module footprint, which is
 much easier to solder to.
 
+![Close-up of the stock board: the WBR3 and its UART header](docs/images/header_detail.jpg)
+
 ![Control board (PCB FLYBGU05A): WBR3 module, RST/RX/TX/VDD/GND header and A/B/GND/5V footprint](docs/images/board_overview.jpg)
 
 ![Close-up of the UART header and the WBR3 module](docs/images/header_detail.jpg)
@@ -93,6 +95,10 @@ Notes:
 - **Do not connect USB and board power at the same time** if you are unsure about isolation.
 - If a CB3S (or the WBR3) is still sitting on the module footprint unpowered, it hangs on the
   UART lines and degrades them. Remove it.
+
+| The four soldered wires (5V, GND, TX, RX) | Final assembly — XIAO powered from the 5V footprint |
+|---|---|
+| ![Soldered UART and power wires](docs/images/soldering.jpg) | ![Final assembly with the XIAO ESP32-C6](docs/images/final_assembly.jpg) |
 
 ## Datapoint (dpID) map
 
@@ -236,13 +242,19 @@ exactly what you are doing.
 
 ## Stock firmware backup
 
-A full backup of the stock WBR3 firmware was made before desoldering (recommended: do your
-own with `ltchiptool flash read ambz2 wbr3_backup.bin -d /dev/ttyUSB0` — note the WBR3 must
-be **desoldered** to reach the strap/log pads). It will be published here once located and
-verified free of credentials.
+This project **does not flash the WBR3** — it is simply desoldered and replaced. That means
+no firmware backup is strictly needed: the stock Tuya firmware stays intact on the removed
+module. **Recommendation: keep the desoldered WBR3 in a safe place — that module *is* your
+factory restore.** Solder it back and the charger is 100% stock again.
+
+If you still want a file backup, dump it before desoldering (actually, the strap/log pads
+are on the underside, so a dump also requires removing the module):
+`ltchiptool flash read ambz2 wbr3_backup.bin -d /dev/ttyUSB0` (must be exactly 2 MiB).
 
 ## References
 
+- **The charger used here (AliExpress listing)**:
+  https://es.aliexpress.com/item/1005008368645569.html
 - **Feyree teardown (stonacek, Elektroda)** — dpID map, scale factors, charge sequence:
   https://www.elektroda.com/rtvforum/topic4085036.html
 - **Official Tuya WBR3 MCU serial schematic** (MCU UART on pads 15/16):
