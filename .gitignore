@@ -1,0 +1,17 @@
+secrets.yaml
+.esphome/
+*.uf2
+*.bin
+__pycache__/
+
+# Fotos/diagramas de trabajo en la raíz (las públicas van en docs/images/)
+/*.jpg
+/*.png
+/*.svg
+/*.heic
+
+# Documentos internos de trabajo (no publicar)
+instrucciones.md
+instrucciones_borrador.md
+feyree_proyecto_resumen.md
+Inicio.txt

@@ -1,0 +1,128 @@
+# =============================================================================
+# Carga solar - Feyree (EJEMPLO / BORRADOR para Home Assistant)
+#
+# Referencia para retomar el proyecto tras la mudanza. NO importar tal cual:
+#
+# 1. ENTITY_IDS DE EJEMPLO. Los reales los genera ESPHome con sufijo MAC,
+#    algo como:
+#      switch.feyree_ev_charger_carga_activa      (dpID 18)
+#      number.feyree_ev_charger_corriente_carga   (dpID 115)
+#      select.feyree_ev_charger_modo_trabajo      (dpID 14)
+#      select.feyree_ev_charger_comando_carga     (dpID 124)
+#    (verificar en Ajustes > Dispositivos > Feyree EV Charger tras la mudanza)
+#
+# 2. dpID 115 (corriente) NO se puede cambiar en caliente (manual oficial
+#    Feyree + tuya-local): cambiar durante la carga -> error "Over Current"
+#    y sesion detenida. Por eso el ajuste hace la secuencia
+#    Parar (124=1) -> set 115 -> Cargar (124=0). El coche tolera la pausa.
+#
+# 3. Cambios solo en pasos de 2A y con cooldown de 5 min entre ajustes,
+#    para no machacar la secuencia stop/start.
+#
+# 4. Falta crear/tener: sensor.excedente_solar_kw (kW de excedente solar,
+#    ya existe en el sistema) y switch de "carga solar habilitada" si se
+#    quiere poder desactivar la logica a mano.
+# =============================================================================
+
+# --- Ajuste de amperaje segun excedente ------------------------------------
+- alias: "Carga solar - Feyree ajustar amperaje"
+  id: "feyree_carga_solar_amperaje"
+  mode: single
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.excedente_solar_kw
+      above: 1.6            # 6A * 230V = 1,38 kW + margen 0,3 kW
+      for:
+        seconds: 60
+  condition:
+    - condition: state
+      entity_id: switch.feyree_carga_activa
+      state: "on"
+    - condition: template   # cooldown: no reajustar si hace < 5 min
+      value_template: >
+        {{ (now() - (state_attr('automation.carga_solar_feyree_ajustar_amperaje', 'last_triggered')
+           or datetime(2000, 1, 1))).total_seconds() > 300 }}
+  action:
+    - variables:
+        excedente: "{{ states('sensor.excedente_solar_kw') | float(0) }}"
+        actual: "{{ states('number.feyree_corriente_carga') | float(6) }}"
+        # Amperios disponibles con 0,3 kW de margen, redondeados a pasos de 2A
+        # y acotados a [6, 32] (clamp con sort|middle)
+        objetivo: >
+          {{ [6, (((excedente - 0.3) * 1000 / 230) | int // 2) * 2, 32]
+             | sort | middle }}
+    # Histeresis: si el objetivo esta a menos de 2A del actual, no tocar nada
+    - condition: template
+      value_template: "{{ (objetivo - actual) | abs >= 2 }}"
+    # Secuencia segura: parar -> cambiar 115 -> arrancar
+    - service: select.select_option
+      target:
+        entity_id: select.feyree_comando_carga
+      data:
+        option: "Parar"
+    - delay:
+        seconds: 3
+    - service: number.set_value
+      target:
+        entity_id: number.feyree_corriente_carga
+      data:
+        value: "{{ objetivo }}"
+    - delay:
+        seconds: 3
+    - service: select.select_option
+      target:
+        entity_id: select.feyree_comando_carga
+      data:
+        option: "Cargar"
+
+# --- Parada por excedente insuficiente --------------------------------------
+- alias: "Carga solar - Feyree parar sin excedente"
+  id: "feyree_carga_solar_parar"
+  mode: single
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.excedente_solar_kw
+      below: 1.0            # por debajo del minimo de carga (6A ~ 1,4 kW)
+      for:
+        minutes: 5          # soporta nubes pasajeras
+  condition:
+    - condition: state
+      entity_id: switch.feyree_carga_activa
+      state: "on"
+  action:
+    - service: select.select_option
+      target:
+        entity_id: select.feyree_comando_carga
+      data:
+        option: "Parar"
+
+# --- (OPCIONAL) Arranque automatico cuando vuelve el excedente --------------
+# Descomentar si se quiere arranque automatico. Requiere que el coche este
+# enchufado y switch.feyree_carga_activa (dpID 18) en on como habilitador.
+#
+# - alias: "Carga solar - Feyree arrancar con excedente"
+#   id: "feyree_carga_solar_arrancar"
+#   mode: single
+#   trigger:
+#     - platform: numeric_state
+#       entity_id: sensor.excedente_solar_kw
+#       above: 1.7
+#       for:
+#         minutes: 3
+#   condition:
+#     - condition: state
+#       entity_id: switch.feyree_carga_activa
+#       state: "on"
+#   action:
+#     - service: select.select_option
+#       target:
+#         entity_id: select.feyree_modo_trabajo
+#       data:
+#         option: "Carga inmediata"
+#     - delay:
+#         seconds: 2
+#     - service: select.select_option
+#       target:
+#         entity_id: select.feyree_comando_carga
+#       data:
+#         option: "Cargar"
