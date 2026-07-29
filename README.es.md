@@ -23,6 +23,22 @@ Así que sustituir el módulo WiFi por un ESP32 con ESPHome da control local tot
 **sin tocar en absoluto la electrónica de potencia**. El cargador sigue funcionando
 exactamente igual (pantalla, RFID, protecciones); solo deja de depender de la nube de Tuya.
 
+## Hardware
+
+| Elemento | Detalle |
+|---|---|
+| Cargador | Feyree wallbox 7 kW (Tuya, app Smart Life), monofásico 32 A |
+| MCU principal | GigaDevice **GD32F303** (TuyaMCU, 9600 8N1) |
+| Módulo WiFi original | **WBR3** (Realtek RTL8720CF) — retirado |
+| Módulo nuevo | **Seeed XIAO ESP32-C6** (`seeed_xiao_esp32c6`, framework **esp-idf**) |
+
+![Interior del cargador: placa de potencia (izquierda) y placa de control (derecha)](docs/images/charger_opened.jpg)
+
+La placa de control tal y como viene de fábrica, con el módulo **WBR3** original en su sitio
+y el header de 5 pines `RST/RX/TX/VDD/GND` al lado:
+
+![Placa de control de serie: módulo WBR3 original y header UART](docs/images/header_detail.jpg)
+
 ### Por qué sustituir el WBR3 en vez de flashearlo
 
 - El WBR3 (Realtek RTL8720CF) **no está entre los chips soportados oficialmente por
@@ -46,27 +62,12 @@ exactamente igual (pantalla, RFID, protecciones); solo deja de depender de la nu
 
 ![Swap comunitario de un CB3S soldado en el footprint del WBR3 (foto: comunidad Elektroda)](docs/images/cb3s_swap_community.jpg)
 
-## Hardware
-
-| Elemento | Detalle |
-|---|---|
-| Cargador | Feyree wallbox 7 kW (Tuya, app Smart Life), monofásico 32 A |
-| MCU principal | GigaDevice **GD32F303** (TuyaMCU, 9600 8N1) |
-| Módulo WiFi original | **WBR3** (Realtek RTL8720CF) — retirado |
-| Módulo nuevo | **Seeed XIAO ESP32-C6** (`seeed_xiao_esp32c6`, framework **esp-idf**) |
-
-![Interior del cargador: placa de potencia (izquierda) y placa de control (derecha)](docs/images/charger_opened.jpg)
-
 ### Cableado XIAO ESP32-C6 ↔ placa Feyree
 
 La UART TuyaMCU está en los **pads 15/16** del footprint del módulo WiFi (confirmado con el
 esquema de aplicación oficial del datasheet Tuya del WBR3: pin 16 = TXD, pin 15 = RXD). Esa
 misma UART está expuesta en el **header de 5 pines RST/RX/TX/VDD/GND** junto al footprint,
 mucho más cómodo de soldar.
-
-![Placa de control (PCB FLYBGU05A): módulo WBR3, header RST/RX/TX/VDD/GND y footprint A/B/GND/5V](docs/images/board_overview.jpg)
-
-![Detalle del header UART y el módulo WBR3](docs/images/header_detail.jpg)
 
 ![Pinout del XIAO ESP32-C6 (Seeed Studio)](docs/images/xiao_pinout.png)
 

@@ -23,6 +23,22 @@ So replacing the WiFi module with an ESP32 running ESPHome gives you full local 
 **without touching the power electronics at all**. The charger keeps working exactly as
 before (display, RFID, protections); it just stops depending on the Tuya cloud.
 
+## Hardware
+
+| Item | Detail |
+|---|---|
+| Charger | Feyree wallbox 7 kW (Tuya, Smart Life app), single-phase 32 A |
+| Main MCU | GigaDevice **GD32F303** (TuyaMCU, 9600 8N1) |
+| Stock WiFi module | **WBR3** (Realtek RTL8720CF) — removed |
+| New module | **Seeed XIAO ESP32-C6** (`seeed_xiao_esp32c6`, **esp-idf** framework) |
+
+![Inside the charger: power board (left) and control board (right)](docs/images/charger_opened.jpg)
+
+The control board as it comes from the factory, with the original **WBR3** module in place
+and the 5-pin `RST/RX/TX/VDD/GND` header next to it:
+
+![Stock control board: original WBR3 module and UART header](docs/images/header_detail.jpg)
+
 ### Why replace the WBR3 instead of flashing it
 
 - The WBR3 (Realtek RTL8720CF) is **not among ESPHome's officially supported chips** (the
@@ -45,27 +61,12 @@ before (display, RFID, protections); it just stops depending on the Tuya cloud.
 
 ![Community CB3S swap soldered on the WBR3 footprint (photo: Elektroda community)](docs/images/cb3s_swap_community.jpg)
 
-## Hardware
-
-| Item | Detail |
-|---|---|
-| Charger | Feyree wallbox 7 kW (Tuya, Smart Life app), single-phase 32 A |
-| Main MCU | GigaDevice **GD32F303** (TuyaMCU, 9600 8N1) |
-| Stock WiFi module | **WBR3** (Realtek RTL8720CF) — removed |
-| New module | **Seeed XIAO ESP32-C6** (`seeed_xiao_esp32c6`, **esp-idf** framework) |
-
-![Inside the charger: power board (left) and control board (right)](docs/images/charger_opened.jpg)
-
 ### Wiring XIAO ESP32-C6 ↔ Feyree board
 
 The TuyaMCU UART lives on **pads 15/16** of the WiFi module footprint (confirmed against the
 official Tuya WBR3 datasheet application schematic: pin 16 = TXD, pin 15 = RXD). That UART is
 also exposed on the 5-pin **RST/RX/TX/VDD/GND header** next to the module footprint, which is
 much easier to solder to.
-
-![Control board (PCB FLYBGU05A): WBR3 module, RST/RX/TX/VDD/GND header and A/B/GND/5V footprint](docs/images/board_overview.jpg)
-
-![Close-up of the UART header and the WBR3 module](docs/images/header_detail.jpg)
 
 ![XIAO ESP32-C6 pinout (Seeed Studio)](docs/images/xiao_pinout.png)
 
